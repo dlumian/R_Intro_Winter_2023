@@ -1,0 +1,86 @@
+---
+title: "Data_Manipulation"
+author: "Daniel Lumian"
+date: '2023-01-22'
+output: pdf_document
+---
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+Running this in a new project or on your own computer for the fist time you would need to run `install.packages("tidyverse")`.  Thereafter you only need to turn on the package. 
+
+```{r}
+library(tidyverse)
+```
+
+## Iris Dataset
+
+You will read in the pbc data set from the survival package. To find more information on the pbc data set you can use `?pbc` or use the help tab in the right hand side and search pbc.  This gives more information on how the data was created and what is in each column.
+```{r}
+iris
+```
+
+You can sort your data using the arrange function.  This will sort the data based on age in ascending order with the youngest patient being the first of the dataset.
+```{r}
+iris_arrange <- arrange(iris, Sepal.Length) 
+iris_arrange
+```
+You can also sort on descending order. You will again use age and this time the oldest patient will be the first.
+```{r}
+iris_arrange <- arrange(iris, desc(Sepal.Length))
+iris_arrange
+```
+This is a large data set, let's say you want to subset the data to just the columns of information you need for your analysis. You can use the select function. Let's say you are interested in just the patient id, sex and age.
+```{r}
+iris_select <- select(iris, Sepal.Length, Sepal.Width, Species)
+iris_select
+```
+For reference you can use the "-" to select every column but the ones listed
+```{r}
+iris_select <- select(iris, -Sepal.Length, -Sepal.Width)
+iris_select
+```
+You may only be interested in the setosa species for this data set. You can use the filter function to select only rows where species is equal to "setosa".
+```{r}
+iris_filter <- filter(iris, Species=="setosa") 
+iris_filter
+```
+You can also filter based on if septal length is greater than the mean of septal length. 
+```{r}
+iris_filter <- filter(iris, Sepal.Length > mean(iris$Sepal.Length))
+iris_filter
+```
+You may be interested in computing new information from your data. 
+
+For instance, you may want to calculate the ratio of sepal width to sepal length.
+
+```{r}
+iris_mutate <- mutate(iris, Sepal.Ratio=Sepal.Width/Sepal.Length) 
+iris_mutate
+```
+
+You can use the summarize function to summarize the data in specific ways. Here you are outputting a table with mean sepal length of the dataset.
+```{r}
+avg_sepal_length <-summarize(iris, mean_val = mean(Sepal.Length))
+avg_sepal_length
+```
+You can also group the data based on a specified variable or group of variables.
+```{r}
+group_by_species <- group_by(iris,Species)
+group_by_species
+```
+Interestingly nothing changes about the data that can be seen in the table. You can use the groups function to look at how the data is. You can always use View(iris) to look at the original data set. 
+```{r}
+groups(group_by_species)
+groups(iris)
+```
+Group by is particularly helpful when used in conjunction other functions such as the previously used summarize function.  You can combine the group by and summarize function to calculate the mean age of males versus females. You could do this in two steps but you don't need the intermediate data so a pipe "%>%" can be used. A pipe is like saying do this then immediately follow with this next function.
+```{r}
+iris_final <- iris %>% group_by(Species) %>% summarize(new_col = mean(Sepal.Length))
+iris_final
+```
+This concludes the introduction to data manipulation!

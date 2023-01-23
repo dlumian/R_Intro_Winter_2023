@@ -1,0 +1,2 @@
+"0","avg_sepal_length <-summarize(iris, mean_val = mean(Sepal.Length))"
+"0","avg_sepal_length"

@@ -1,0 +1,90 @@
+---
+title: "Importing Data"
+author: "Daniel Lumian"
+date: '2023-01-22'
+output: pdf_document
+---
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. 
+
+You can embed an R code chunk like below.
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+```{r}
+library(tidyverse)
+```
+
+## Saving data to local file
+To start with, we will load the built-in iris data set.
+
+We will then manipulate the data, adding a column, and save the data.
+
+Data will be exported in multiple formats to show R capabilities.
+
+A `data` folder has been created for you to save the files in to help keep the 
+repo organized.
+```{r}
+iris
+```
+Now let's add a column to the data.
+```{r}
+pbc_mutate <- mutate(pbc, new_val=ast/1000) 
+pbc_mutate
+```
+
+Before writing out the table, let's figure out where we are in the repo.
+```{r}
+getwd()
+```
+The output shows we are in the `notebooks` folder. So we will have to go up a directory
+and then down into the `data` folder to save to the correct location.
+
+Once you have calculated new information in our table you may want to write the table to a file.  You can use the write.table function for this.
+
+The file will show up in the files tab to the right with the name `../data/pbc_mutate.txt`. The `..` means to go up a directory.
+```{r}
+write.table(pbc_mutate,"../data/pbc_mutate.txt",row.names=F,sep="\t")
+```
+
+We can also save the data into a csv format. The syntax will be similar.
+```{r}
+write.csv(pbc_mutate,"../data/pbc_mutate.csv",row.names=F)
+```
+
+## Read data in from local file
+
+We will now read the data we saved back into R. 
+
+Let's start with the text table saved first.
+```{r}
+pbc_mutate_txt = read.table("../data/pbc_mutate.txt", header = TRUE, sep = "\t")
+pbc_mutate_txt
+```
+
+Next, let's load the csv data back into r with a new variable name.
+```{r}
+pbc_mutate_csv = read.csv("../data/pbc_mutate.csv", header = TRUE)
+pbc_mutate_csv
+```
+
+Now that we have two data frames loaded, let's check if they are the same.
+```{r}
+identical(pbc_mutate_txt, pbc_mutate_csv)
+```
+This shows that even though we saved the data in two formats, when we read the 
+data back into R, the data frames are identical. So how you save your data is up
+to your preference, as long as you specify the correct parameters when saving
+and importing the data.
+
+## Reading data from a website
+We can load pre-computed data directly from [GEO](https://www.ncbi.nlm.nih.gov/geo/
+) (the gene expression omnibus).  Let's use RNAseq data from 3 adult and 4 embryonic mouse cerebral cortex samples.  This data set (GSE39866) was generated to track transcriptomic changes during brain development. The R package deseq2 was used to normalize and then calculate differential expression for this data set.
+```{r}
+vst <-read_tsv("ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE39nnn/GSE39866/suppl/GSE39866_Mouse.VarianceStabilized.Datagene.txt.gz")
+vst
+```
+This concludes the data import/export module.
