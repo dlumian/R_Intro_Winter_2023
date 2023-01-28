@@ -1,0 +1,2 @@
+"0","png('../images/iris_pie_chart.png')"
+"0","pie(species_count$Freq, labels = species_count$Var1)"

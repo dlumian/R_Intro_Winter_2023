@@ -1,0 +1,3 @@
+"0","gene_select <- vst %>% filter(gene_id %in% c(""Mobp"",""Ttr"",""Caly"", ""Vax1"")) %>% data.frame"
+"0","rownames(gene_select) <- gene_select$gene_id"
+"0","gene_select"

@@ -1,0 +1,1 @@
+"0","ggplot(phylum_long ,  aes(taxa, value)) + geom_bar(aes(fill = key), position = ""dodge"", stat=""identity"") + facet_wrap(vars(taxa), scales = ""free"") "

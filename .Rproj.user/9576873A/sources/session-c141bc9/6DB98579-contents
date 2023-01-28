@@ -1,0 +1,205 @@
+---
+title: "Data Visualization"
+author: "Daniel Lumian"
+date: '2023-01-28'
+output: pdf_document
+---
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+library(tidyverse)
+```
+### Get current working directory
+```{r}
+getwd()
+```
+## Create a directory for output of images
+```{r}
+img_path = "../images"
+dir.create(img_path)
+```
+
+## Piechart
+
+Let's start with a trivial example of how to create a pie chart. 
+
+NOTE: Pie charts are not included in ggplot, so the syntax for them differs slightly from other plots.
+
+```{r}
+pie(c("Sky" = 78, "Sunny side of pyramid" = 17, "Shady side of pyramid" = 5),
+    init.angle = 315, col = c("deepskyblue", "yellow", "yellow3"), border = FALSE)
+```
+Now let's try an example with the iris dataset.
+
+First, we need to create a dataframe with counts for each species.
+```{r}
+species_count = as.data.frame(table(iris$Species))
+species_count
+```
+Now, we can plot the data using a base R function `pie`.
+```{r}
+pie(species_count$Freq, labels = species_count$Var1)
+```
+If you want to save the image to a file, use the following syntax:
+```{r}
+png('../images/iris_pie_chart.png')
+pie(species_count$Freq, labels = species_count$Var1)
+dev.off()
+```
+
+# Data Visualization with ggplot
+
+Plotting a single discrete variable(Species) as a bar plot.  
+
+Here the y-axis is the number of rows for each species.
+
+Let's calculate the numbers we expect before generating the plot.
+```{r}
+Sepal.Length_count = iris %>% group_by(Species) %>% summarize(Sepal.Length_cnt = length(Sepal.Length))
+Sepal.Length_count
+```
+Now, let's plot the data.
+```{r}
+ggplot(iris, aes(x=Species)) + geom_bar()
+```
+
+Plotting a single continuous variable (Sepal.Length) as a histogram. 
+
+Here the y-axis is the number of flowers in each length bin.
+```{r}
+ggplot(iris, aes(x=Sepal.Length)) + geom_histogram()
+```
+
+ggplot gives a warning that the default binwidth may not be the most suitable for our data.  
+
+We can specific binwidth by adding it to the histogram function options.
+```{r}
+ggplot(iris, aes(x=Sepal.Length)) + geom_histogram(binwidth=.3)
+```
+
+Histograms are easier to create when the underlying data distribution is already known, making it harder to use for exploration.  It is also a count based method so comparing across data sets of differing numbers would be difficult. A density plot is similar to a histogram. 
+```{r}
+ggplot(iris, aes(Sepal.Length)) + geom_density()
+```
+
+Plotting discrete (species) and continuous (Sepal.Length) variables as a boxplot plot.
+```{r}
+ggplot(iris, aes(x= Species, y=Sepal.Length)) + geom_boxplot()
+```
+
+Plotting two continuous variables (Sepal.Length and Sepal.Width) as a scatter plot.
+```{r}
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) + geom_point()
+```
+
+Revisiting the layering concept, we can add a regression line to our previous plot by just adding that function to the previous command.  We want to plot a linear regression so we need to specify that in the method option. 
+```{r}
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) + geom_point() + geom_smooth(method=lm)
+```
+
+We can create a scatter plot with sepaal length versus sepal width and add color to the points based on species.  
+
+This will also be passed to the regression line so there will now be a separate regression line for each species.
+```{r}
+ggplot(iris, aes(x=Sepal.Length, y=Sepal.Width, color=Species)) + geom_point() + geom_smooth(method=lm)
+```
+
+The points and lines overlap to some degree so it is difficult to see if there are any differences.  We can instead automatically generate a graph for each value in a discrete variable using the facet wrap function.
+```{r}
+ggplot(iris, aes(x=Sepal.Length, y=Sepal.Width)) + geom_point() + geom_smooth(method = lm) + facet_wrap(vars(Species), nrow=1)
+```
+
+Let's say we want to create density plots for all of the continuous data to get a quick look at data distribution.  
+
+We could utilize the facet wrap command but first we would need to reshape our data to a long format.  
+
+Right now the data is in a wide format in which each flower is a single row with each continuous variable in a separate column. 
+
+We can select the species and continuous variables and then use gather to move all of these variables into a singular key column with the corresponding value in a value column. 
+```{r}
+iris_long <- iris %>% gather(key, value, -Species)
+iris_long
+```
+Once we have reshaped our data in this format we can plot all of the continuous variables as density plots in a single command. 
+```{r}
+ggplot(iris_long , aes(value)) + geom_density() + facet_wrap(vars(key), scales = "free") 
+```
+
+We can save the last ggplot we created with the ggsave function.
+```{r}
+ggsave(file.path(img_path, "facet_density.png"))
+```
+
+# Visualizations with clinical dataset
+
+Let's load in some new data from a csv file located at `../data/table_phylum_young.csv`
+
+```{r}
+phylum = read_csv("../data/table_phylum_young.csv")
+phylum
+```
+We need the data in long form, so lets start by tranforming it.
+
+```{r}
+phylum_long <- phylum %>% gather(key, value, -taxa)
+phylum_long
+```
+
+
+```{r}
+ggplot(phylum_long, aes(taxa, value)) +   
+  geom_bar(aes(fill = key), position = "dodge", stat="identity")
+```
+
+```{r}
+ggplot(phylum_long, aes(taxa, value)) +   
+  geom_bar(aes(fill = key), position = "dodge", stat="identity") +
+  theme(axis.text.x=element_text(angle = -90, hjust = 0))
+```
+```{r}
+ggplot(phylum_long ,  aes(taxa, value)) + 
+  geom_bar(aes(fill = key), position = "dodge", stat="identity") + 
+  facet_wrap(vars(taxa), scales = "free") 
+```
+Lets save the final version. 
+```{r}
+ggsave(file.path(img_path, "facet_barplot.png"))
+```
+
+#### Heatmap
+
+We will use a package called pheatmap, for making pretty heatmaps.  As with the tidyverse package in a new project or on your own computer for the fist time you would need to run install.packages("pheatmap"). We can then turn on or load our library.
+```{r}
+library(pheatmap)
+```
+
+We will use the same vst dataset that we pulled in the import/export module.  
+
+```{r}
+vst <-read_tsv("ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE39nnn/GSE39866/suppl/GSE39866_Mouse.VarianceStabilized.Datagene.txt.gz")
+vst
+```
+
+First we will select some interesting genes.  
+These could be genes from a previous screen or experiment that were of interest. 
+
+In this particular case we know these genes involved in development.  
+
+We will then set our row names as the gene ids because by default the row names in the table will be the row names for the heatmap.
+```{r}
+gene_select <- vst %>% filter(gene_id %in% c("Mobp","Ttr","Caly", "Vax1")) %>% data.frame
+rownames(gene_select) <- gene_select$gene_id
+gene_select
+```
+Once our data manipulations are done we can use the pheatmap function.  
+We are deselecting gene id as the heatmap function can only take numerical values.
+```{r}
+gene_select %>% select(-gene_id) %>% pheatmap()
+```
+
+This concludes the intro to Data Visualization in R!

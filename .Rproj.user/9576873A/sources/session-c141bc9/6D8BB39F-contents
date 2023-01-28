@@ -32,8 +32,8 @@ iris
 ```
 Now let's add a column to the data.
 ```{r}
-pbc_mutate <- mutate(pbc, new_val=ast/1000) 
-pbc_mutate
+iris_mutate <- mutate(iris, Sepal.Ratio=Sepal.Width/Sepal.Length) 
+iris_mutate
 ```
 
 Before writing out the table, let's figure out where we are in the repo.
@@ -47,12 +47,12 @@ Once you have calculated new information in our table you may want to write the 
 
 The file will show up in the files tab to the right with the name `../data/pbc_mutate.txt`. The `..` means to go up a directory.
 ```{r}
-write.table(pbc_mutate,"../data/pbc_mutate.txt",row.names=F,sep="\t")
+write.table(iris_mutate,"../data/iris_mutate.txt",row.names=F,sep="\t")
 ```
 
 We can also save the data into a csv format. The syntax will be similar.
 ```{r}
-write.csv(pbc_mutate,"../data/pbc_mutate.csv",row.names=F)
+write.csv(iris_mutate,"../data/iris_mutate.csv",row.names=F)
 ```
 
 ## Read data in from local file
@@ -61,19 +61,19 @@ We will now read the data we saved back into R.
 
 Let's start with the text table saved first.
 ```{r}
-pbc_mutate_txt = read.table("../data/pbc_mutate.txt", header = TRUE, sep = "\t")
-pbc_mutate_txt
+iris_mutate_txt = read.table("../data/iris_mutate.txt", header = TRUE, sep = "\t")
+iris_mutate_txt
 ```
 
 Next, let's load the csv data back into r with a new variable name.
 ```{r}
-pbc_mutate_csv = read.csv("../data/pbc_mutate.csv", header = TRUE)
-pbc_mutate_csv
+iris_mutate_csv = read.csv("../data/iris_mutate.csv", header = TRUE)
+iris_mutate_csv
 ```
 
 Now that we have two data frames loaded, let's check if they are the same.
 ```{r}
-identical(pbc_mutate_txt, pbc_mutate_csv)
+identical(iris_mutate_txt, iris_mutate_csv)
 ```
 This shows that even though we saved the data in two formats, when we read the 
 data back into R, the data frames are identical. So how you save your data is up
