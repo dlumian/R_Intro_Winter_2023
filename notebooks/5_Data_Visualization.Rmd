@@ -202,4 +202,5 @@ We are deselecting gene id as the heatmap function can only take numerical value
 gene_select %>% select(-gene_id) %>% pheatmap()
 ```
 
+
 This concludes the intro to Data Visualization in R!

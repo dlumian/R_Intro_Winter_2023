@@ -1,0 +1,2 @@
+"0","mpg_barplot_data <- mtcars %>% group_by(vs) %>% summarize(mpg_M = mean(mpg), mpg_SD = sd(mpg))"
+"0","mpg_barplot_data"

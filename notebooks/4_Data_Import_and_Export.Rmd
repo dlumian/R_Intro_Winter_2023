@@ -30,6 +30,7 @@ repo organized.
 ```{r}
 iris
 ```
+
 Now let's add a column to the data.
 ```{r}
 iris_mutate <- mutate(iris, Sepal.Ratio=Sepal.Width/Sepal.Length) 

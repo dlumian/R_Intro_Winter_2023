@@ -1,0 +1,3 @@
+"0","ggplot(phylum_long, aes(taxa, value)) +   "
+"0","  geom_bar(aes(fill = key), position = ""dodge"", stat=""identity"") +"
+"0","  theme(axis.text.x=element_text(angle = -90, hjust = 0))"

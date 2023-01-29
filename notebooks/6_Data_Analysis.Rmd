@@ -13,7 +13,6 @@ When you click the **Knit** button a document will be generated that includes bo
 
 Note: if you have not installed the finalfit library, use `install.packages("corrplot")`.
 ```{r cars}
-library(survival)
 library(tidyverse)
 library(corrplot)
 ```
@@ -214,8 +213,8 @@ We can now compare the first and second time points.
 ```{r}
 t.test(ChickWeightWide$weight.0, ChickWeightWide$weight.2, paired = TRUE)
 ```
-We can plot the average weight at each point and see that, as we might expect, weight
-goes up at each subsequent timepoint.
+We can plot the average weight at each point and see that, as we might expect, 
+weight goes up at each subsequent timepoint.
 
 ```{r}
 ggplot(ChickWeight, aes(x=Time, y=weight, fill=Time)) + 

@@ -1,0 +1,2 @@
+"0","phylum_long <- phylum %>% gather(key, value, -taxa)"
+"0","phylum_long"

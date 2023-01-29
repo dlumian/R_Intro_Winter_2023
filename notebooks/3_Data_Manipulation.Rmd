@@ -57,7 +57,6 @@ iris_filter
 You may be interested in computing new information from your data. 
 
 For instance, you may want to calculate the ratio of sepal width to sepal length.
-
 ```{r}
 iris_mutate <- mutate(iris, Sepal.Ratio=Sepal.Width/Sepal.Length) 
 iris_mutate
